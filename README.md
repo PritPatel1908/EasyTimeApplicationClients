@@ -59,3 +59,52 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+## EasyTime Application Clients
+
+This application manages clients and application users for the EasyTime system.
+
+## API Documentation
+
+### Client Code Verification
+
+Verify a client code and get the associated URL if found.
+
+-   **URL:** `/api/verify-client-code`
+-   **Method:** `POST`
+-   **Request Body:**
+    ```json
+    {
+        "client_code": "YOUR_CLIENT_CODE"
+    }
+    ```
+-   **Success Response:**
+    -   **Code:** 200
+    -   **Content:**
+        ```json
+        {
+            "status": "success",
+            "url": "https://example.com/app",
+            "message": "Client code found"
+        }
+        ```
+-   **Error Response:**
+    -   **Code:** 404
+    -   **Content:**
+        ```json
+        {
+            "status": "error",
+            "message": "Client code not found"
+        }
+        ```
+    -   **OR**
+    -   **Code:** 422
+    -   **Content:**
+        ```json
+        {
+            "message": "The client code field is required.",
+            "errors": {
+                "client_code": ["The client code field is required."]
+            }
+        }
+        ```
