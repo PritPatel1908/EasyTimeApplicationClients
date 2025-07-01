@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\ClientCodeController;
+use App\Http\Controllers\Api\ApplicationUserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,4 +15,5 @@ use App\Http\Controllers\Api\ClientCodeController;
 |
 */
 
-Route::post('/verify-client-code', [ClientCodeController::class, 'verifyClientCode']);
+// Client code verification API
+Route::post('/verify-client-code', [ApplicationUserController::class, 'verifyClientCode']);

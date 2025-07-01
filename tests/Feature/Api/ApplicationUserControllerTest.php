@@ -2,34 +2,31 @@
 
 namespace Tests\Feature\Api;
 
-use Tests\TestCase;
-use App\Models\Client;
 use App\Models\ApplicationUser;
+use App\Models\Client;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\TestCase;
 
-class ClientCodeTest extends TestCase
+class ApplicationUserControllerTest extends TestCase
 {
     use RefreshDatabase;
 
     /** @test */
-    public function it_returns_success_with_url_when_client_code_exists()
+    public function it_returns_url_when_valid_client_code_is_provided()
     {
         // Create a client
-        $client = Client::factory()->create([
-            'is_active' => true,
-        ]);
+        $client = Client::factory()->create();
 
-        // Create an application user with a client code
+        // Create an application user with the client
         $applicationUser = ApplicationUser::factory()->create([
             'client_id' => $client->id,
-            'client_code' => 'TEST123',
+            'client_code' => 'VALID_CODE_123',
             'url' => 'https://example.com/app',
-            'allow_login' => true,
         ]);
 
-        // Make API request
+        // Send request with valid client code
         $response = $this->postJson('/api/verify-client-code', [
-            'client_code' => 'TEST123',
+            'client_code' => 'VALID_CODE_123',
         ]);
 
         // Assert response
@@ -37,30 +34,29 @@ class ClientCodeTest extends TestCase
             ->assertJson([
                 'status' => 'success',
                 'url' => 'https://example.com/app',
-                'message' => 'Client code found',
             ]);
     }
 
     /** @test */
-    public function it_returns_error_when_client_code_does_not_exist()
+    public function it_returns_error_when_invalid_client_code_is_provided()
     {
-        // Make API request with non-existent client code
+        // Send request with invalid client code
         $response = $this->postJson('/api/verify-client-code', [
-            'client_code' => 'NONEXISTENT',
+            'client_code' => 'INVALID_CODE_123',
         ]);
 
         // Assert response
         $response->assertStatus(404)
             ->assertJson([
                 'status' => 'error',
-                'message' => 'Client code not found',
+                'message' => 'Invalid client code or URL not found',
             ]);
     }
 
     /** @test */
     public function it_validates_client_code_is_required()
     {
-        // Make API request without client code
+        // Send request without client code
         $response = $this->postJson('/api/verify-client-code', []);
 
         // Assert validation error
